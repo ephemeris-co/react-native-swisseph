@@ -797,37 +797,16 @@ declare namespace swisseph {
     ipl: number,
     iflag: number,
     callback?: ResultCallback<typeof swe_calc_ut>
-  ):
-    | {
-        longitude: number
-        latitude: number
-        distance: number
-        longitudeSpeed: number
-        latitudeSpeed: number
-        distanceSpeed: number
-        rflag: number
-      }
-    | {
-        rectAscension: number
-        declination: number
-        distance: number
-        rectAscensionSpeed: number
-        declinationSpeed: number
-        distanceSpeed: number
-        rflag: number
-      }
-    | {
-        x: number
-        y: number
-        z: number
-        dx: number
-        dy: number
-        dz: number
-        rflag: number
-      }
-    | {
-        error: string
-      }
+  ): Promise<{
+    longitude: number
+    latitude: number
+    distance: number
+    longitudeSpeed: number
+    latitudeSpeed: number
+    distanceSpeed: number
+    rflag: number
+    error: string
+  }>
 
   /**
    * Computes the position of a planet, asteroid, lunar node or an apogee for a specified Terrestrial Time.
@@ -1706,58 +1685,16 @@ declare namespace swisseph {
    */
   function swe_houses(
     tjd_ut: number,
-    geolat: number,
-    geolon: number,
-    hsys: string,
-    callback?: ResultCallback<typeof swe_houses>
-  ):
-    | {
-        house: number[]
-        ascendant: number
-        mc: number
-        armc: number
-        vertex: number
-        equatorialAscendant: number
-        kochCoAscendant: number
-        munkaseyCoAscendant: number
-        munkaseyPolarAscendant: number
-      }
-    | {
-        error: string
-      }
-
-  /**
-   * Calculates houses and tropical or sidereal positions for a given date and geographic position.
-   * @param tjd_ut The Julian day in Universal Time.
-   * @param iflag 0 or SEFLG_SIDEREAL or SEFLG_RADIANS.
-   * @param geolat The geographic latitude.
-   * @param geolon The geographic longitude.
-   * @param hsys A letter defining the house method used for the calculation.
-   * @param callback Optional callback called with the result.
-   * @returns The result of the computation or an error.
-   */
-  function swe_houses_ex(
-    tjd_ut: number,
     iflag: number,
     geolat: number,
     geolon: number,
     hsys: string,
-    callback?: ResultCallback<typeof swe_houses_ex>
-  ):
-    | {
-        house: number[]
-        ascendant: number
-        mc: number
-        armc: number
-        vertex: number
-        equatorialAscendant: number
-        kochCoAscendant: number
-        munkaseyCoAscendant: number
-        munkaseyPolarAscendant: number
-      }
-    | {
-        error: string
-      }
+    callback?: ResultCallback<typeof swe_houses>
+  ): Promise<{
+    cusp: number[]
+    ascmc: number[]
+    error?: string
+  }>
 
   /**
    * Calculates houses and tropical or sidereal positions for a given date and geographic position.
