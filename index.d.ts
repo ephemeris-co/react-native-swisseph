@@ -801,9 +801,9 @@ declare namespace swisseph {
     longitude: number
     latitude: number
     distance: number
-    longitudeSpeed: number
-    latitudeSpeed: number
-    distanceSpeed: number
+    speedLong: number
+    speedLat: number
+    speedDist: number
     rflag: number
     error: string
   }>
