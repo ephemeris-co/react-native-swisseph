@@ -4,7 +4,6 @@ import swisseph from "./swisseph"
 
 const { RNSwisseph } = NativeModules;
 
-
 async function swe_julday(year,mouth,day,hour,flag) {
     return await RNSwisseph.swe_julday(year,mouth,day,hour,flag);
 }
@@ -115,6 +114,9 @@ async function swe_nod_aps_ut(tjd_ut,ipl,iflag,method) {
     return await RNSwisseph.swe_nod_aps_ut(tjd_ut,ipl,iflag,method);
 }
 
+async function swe_difdeg2n(p1, p2) {
+  return await RNSwisseph.swe_difdeg2n(p1, p2);
+}
 
 export default {
     ...swisseph,
@@ -142,5 +144,6 @@ export default {
     swe_heliacal_pheno_ut,
     swe_vis_limit_mag,
     swe_nod_aps_ut,
-    swe_cotrans
+    swe_cotrans,
+    swe_difdeg2n
 };

@@ -529,8 +529,7 @@ declare namespace swisseph {
   function swe_difdeg2n(
     p1: number,
     p2: number,
-    callback?: ResultCallback<typeof swe_difdeg2n>
-  ): { degreeDistance180: number }
+  ): Promise<number>
 
   /**
    * Distance in radians between p1 and p2 normalized to -PI - PI.

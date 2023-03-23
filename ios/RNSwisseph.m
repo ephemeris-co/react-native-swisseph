@@ -986,6 +986,19 @@ RCT_EXPORT_METHOD(swe_nod_aps_ut:(double) tjd_ut
     }
 }
 
+RCT_EXPORT_METHOD(swe_difdeg2n:(double) p1
+                  p2: (double) p2
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  ) {
+    @try{
+        double difdeg = swe_difdeg2n(p1, p2);
+        resolve([[NSNumber alloc] initWithDouble:difdeg]);
+    }
+    @catch(NSException *exception) {
+        reject(@"0",exception.reason,nil);
+    }
+}
 
 
 @end
