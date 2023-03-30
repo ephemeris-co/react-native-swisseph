@@ -118,6 +118,10 @@ async function swe_difdeg2n(p1, p2) {
   return await RNSwisseph.swe_difdeg2n(p1, p2);
 }
 
+async function swe_rise_trans(tjd_ut,ipl,starname,epheflag,rsmi,latitude,longitude,height,atpress,attemp) {
+  return await RNSwisseph.swe_rise_trans(tjd_ut,ipl,starname,epheflag,rsmi,latitude,longitude,height,atpress,attemp);
+}
+
 export default {
     ...swisseph,
     swe_julday,
@@ -145,5 +149,6 @@ export default {
     swe_vis_limit_mag,
     swe_nod_aps_ut,
     swe_cotrans,
-    swe_difdeg2n
+    swe_difdeg2n,
+    swe_rise_trans
 };

@@ -2442,14 +2442,7 @@ declare namespace swisseph {
     atpress: number,
     attemp: number,
     callback?: ResultCallback<typeof swe_rise_trans>
-  ):
-    | {
-        name: string
-        transitTime: number
-      }
-    | {
-        error: string
-      }
+  ): number
 
   /**
    * Computes the times of rising, setting and meridian transits for planets, asteroids, the moon and the fixed stars

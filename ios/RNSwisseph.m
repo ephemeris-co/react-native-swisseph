@@ -1000,6 +1000,34 @@ RCT_EXPORT_METHOD(swe_difdeg2n:(double) p1
     }
 }
 
+RCT_EXPORT_METHOD(swe_rise_trans:(double) tjd_ut
+                  ipl: (int) ipl
+                  starname: (NSString *) starname
+                  epheflag: (int) epheflag
+                  rsmi: (int) rsmi
+                  latitude: (double) latitude
+                  longitude: (double) longitude
+                  height: (double) height
+                  atpress: (double) atpress
+                  attemp: (double) attemp
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  ) {
+
+    @try{
+        double rise_set_time;
+        char serr[AS_MAXCH];
+        double* geopos = malloc(sizeof(double) * 3);
+        geopos[0] = longitude;
+        geopos[1] = latitude;
+        geopos[2] = height;
+        swe_rise_trans(tjd_ut, ipl, [starname UTF8String], epheflag, rsmi, geopos, atpress, attemp, &rise_set_time, serr);
+        resolve([[NSNumber alloc] initWithDouble:rise_set_time]);
+    }
+    @catch(NSException *exception) {
+        reject(@"0",exception.reason,nil);
+    }
+}
 
 @end
 
