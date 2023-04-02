@@ -122,6 +122,18 @@ async function swe_rise_trans(tjd_ut,ipl,starname,epheflag,rsmi,latitude,longitu
   return await RNSwisseph.swe_rise_trans(tjd_ut,ipl,starname,epheflag,rsmi,latitude,longitude,height,atpress,attemp);
 }
 
+async function find_next_crossing(ipl,target_longitude,startdate) {
+  return await RNSwisseph.find_next_crossing(ipl,target_longitude,startdate);
+}
+
+async function find_previous_crossing(ipl,target_longitude,startdate) {
+  return await RNSwisseph.find_next_crossing(ipl,target_longitude,startdate);
+}
+
+async function get_transits(aspects) {
+  return await RNSwisseph.get_transits(aspects);
+}
+
 export default {
     ...swisseph,
     swe_julday,
@@ -150,5 +162,8 @@ export default {
     swe_nod_aps_ut,
     swe_cotrans,
     swe_difdeg2n,
-    swe_rise_trans
+    swe_rise_trans,
+    find_next_crossing,
+    find_previous_crossing,
+    get_transits
 };

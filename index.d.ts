@@ -1,3 +1,40 @@
+type Ephemeris = {
+  julianDay: number
+  longitude: number
+  longitudeSpeed: number
+}
+
+type EclipticEntity = {
+  id: number
+  swissephId: number
+  longitude: number
+  longitudeSpeed: number
+  julianDay: number
+}
+
+type Aspect = {
+  aspect: {
+      left: {
+          startLongitude: number;
+          exactLongitude: number;
+          endLongitude: number;
+      };
+      right: {
+          startLongitude: number;
+          exactLongitude: number;
+          endLongitude: number;
+      };
+      id: number;
+      angle: number;
+  };
+  eclipticEntities: [EclipticEntity, EclipticEntity];
+}[]
+
+type EclipticEntitiesAspect = {
+  eclipticEntities: [EclipticEntity, EclipticEntity]
+  aspect: Aspect
+}
+
 declare namespace swisseph {
   // #region Constants
   const SE_AUNIT_TO_KM = 149597870.7
@@ -2483,6 +2520,27 @@ declare namespace swisseph {
         error: string
       }
   // #endregion Eclipse
+
+  function find_next_crossing(
+    ipl:number,
+    target_longitude: number,
+    startdate: number
+  ): Promise<number>
+
+  function find_previous_crossing(
+    ipl:number,
+    target_longitude: number,
+    startdate: number
+  ): Promise<number>
+
+  function get_transits(aspects: EclipticEntitiesAspect[]): Promise<{
+    points: {
+      enter: Ephemeris
+      exact: Ephemeris
+      leave: Ephemeris
+    }
+    orb: number
+  }[]>
 }
 
 export = swisseph

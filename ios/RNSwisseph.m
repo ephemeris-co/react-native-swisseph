@@ -1,5 +1,6 @@
 
 #import "RNSwisseph.h"
+#include <Foundation/Foundation.h>
 
 
 @implementation RNSwisseph
@@ -1029,5 +1030,202 @@ RCT_EXPORT_METHOD(swe_rise_trans:(double) tjd_ut
     }
 }
 
-@end
+RCT_EXPORT_METHOD(find_next_crossing:(int) ipl
+                  target_longitude: (double) target_longitude
+                  start_jd: (double) start_jd
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+) {
+  @try {
+    double crossing_jd = find_next_crossing(ipl, target_longitude, start_jd);
+    resolve([[NSNumber alloc] initWithDouble:crossing_jd]);
+  }
+  @catch(NSException *exception) {
+    reject(@"0",exception.reason,nil);
+  }
+}
 
+RCT_EXPORT_METHOD(find_previous_crossing:(int) ipl
+  target_longitude: (double) target_longitude
+  start_jd: (double) start_jd
+  resolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+) {
+  @try {
+    double crossing_jd = find_previous_crossing(ipl, target_longitude, start_jd);
+    resolve([[NSNumber alloc] initWithDouble:crossing_jd]);
+  }
+  @catch(NSException *exception) {
+    reject(@"0",exception.reason,nil);
+  }
+};
+
+RCT_EXPORT_METHOD(
+  get_transits: (NSArray *)aspects
+  resolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+) {
+  NSMutableArray *transits = [NSMutableArray array];
+
+  for (NSDictionary *aspect in aspects) {
+      NSArray *eclipticEntities = aspect[@"eclipticEntities"];
+      NSDictionary *transitEclipticEntity = eclipticEntities[0];
+      NSDictionary *natalEclipticEntity = eclipticEntities[1];
+      NSInteger swissephId = [transitEclipticEntity[@"swissephId"] integerValue];
+
+      NSDictionary *leftAspect = aspect[@"aspect"][@"left"];
+      NSDictionary *rightAspect = aspect[@"aspect"][@"right"];
+
+      double leftDiff = fabs([transitEclipticEntity[@"longitude"] doubleValue] - [leftAspect[@"exactLongitude"] doubleValue]);
+      double rightDiff = fabs([transitEclipticEntity[@"longitude"] doubleValue] - [rightAspect[@"exactLongitude"] doubleValue]);
+
+      NSString *side = (leftDiff < rightDiff) ? @"left" : @"right";
+
+      double orb = swe_difdeg2n(
+          [transitEclipticEntity[@"longitude"] doubleValue],
+          (side == @"left")
+              ? [leftAspect[@"exactLongitude"] doubleValue]
+              : [rightAspect[@"exactLongitude"] doubleValue]
+      );
+
+      if (fabs(orb) > 3) {
+          continue;
+      }
+
+      NSNumber *enterJulianDay = nil;
+      NSNumber *exactJulianDay = nil;
+      NSNumber *leaveJulianDay = nil;
+
+      if (side == @"left") {
+          if (orb < 0) {
+              exactJulianDay = @(find_next_crossing(
+                  swissephId,
+                  [leftAspect[@"exactLongitude"] doubleValue],
+                  [transitEclipticEntity[@"julianDay"] doubleValue]
+              ));
+          } else if (orb > 0) {
+              exactJulianDay = @(find_previous_crossing(
+                  swissephId,
+                  [leftAspect[@"exactLongitude"] doubleValue],
+                  [transitEclipticEntity[@"julianDay"] doubleValue]
+              ));
+          } else {
+              exactJulianDay = transitEclipticEntity[@"julianDay"];
+          }
+
+          enterJulianDay = @(find_previous_crossing(
+              swissephId,
+              [leftAspect[@"startLongitude"] doubleValue],
+              [transitEclipticEntity[@"julianDay"] doubleValue]
+          ));
+          leaveJulianDay = @(find_next_crossing(
+              swissephId,
+              [leftAspect[@"endLongitude"] doubleValue],
+              [transitEclipticEntity[@"julianDay"] doubleValue]
+          ));
+      } else {
+          if (orb > 0) {
+              exactJulianDay = @(find_previous_crossing(
+                  swissephId,
+                  [rightAspect[@"exactLongitude"] doubleValue],
+                  [transitEclipticEntity[@"julianDay"] doubleValue]
+              ));
+          } else if (orb < 0) {
+              exactJulianDay = @(find_next_crossing(
+                  swissephId,
+                  [rightAspect[@"exactLongitude"] doubleValue],
+                  [transitEclipticEntity[@"julianDay"] doubleValue]
+              ));
+          } else {
+              exactJulianDay = transitEclipticEntity[@"julianDay"];
+          }
+
+          enterJulianDay = @(find_previous_crossing(
+              swissephId,
+              [rightAspect[@"startLongitude"] doubleValue],
+              [transitEclipticEntity[@"julianDay"] doubleValue]
+          ));
+          leaveJulianDay = @(find_next_crossing(
+              swissephId,
+              [rightAspect[@"endLongitude"] doubleValue],
+              [transitEclipticEntity[@"julianDay"] doubleValue]
+          ));
+      }
+
+      if (!enterJulianDay || !exactJulianDay || !leaveJulianDay) {
+          continue;
+      }
+
+      double enterResult[6];
+      char enterError[AS_MAXCH];
+      swe_calc_ut(
+          [enterJulianDay doubleValue],
+          swissephId,
+          SEFLG_SPEED | SEFLG_JPLEPH,
+          enterResult,
+          enterError
+      );
+      NSDictionary *enterEphemeris = @{
+          @"julianDay": enterJulianDay,
+          @"longitude": [[NSNumber alloc] initWithDouble:(enterResult[0])] ,
+          @"latitude":[[NSNumber alloc] initWithDouble:(enterResult[1])] ,
+          @"distance":[[NSNumber alloc] initWithDouble:(enterResult[2])] ,
+          @"speedLong":[[NSNumber alloc] initWithDouble:(enterResult[3])] ,
+          @"speedLat":[[NSNumber alloc] initWithDouble:(enterResult[4])] ,
+          @"speedDist":[[NSNumber alloc] initWithDouble:(enterResult[5])] ,
+      };
+
+      double exactResult[6];
+      char exactError[AS_MAXCH];
+      swe_calc_ut(
+          [exactJulianDay doubleValue],
+          swissephId,
+          SEFLG_SPEED | SEFLG_JPLEPH,
+          exactResult,
+          exactError
+      );
+      NSDictionary *exactEphemeris = @{
+          @"julianDay": exactJulianDay,
+          @"longitude": [[NSNumber alloc] initWithDouble:(exactResult[0])] ,
+          @"latitude":[[NSNumber alloc] initWithDouble:(exactResult[1])] ,
+          @"distance":[[NSNumber alloc] initWithDouble:(exactResult[2])] ,
+          @"speedLong":[[NSNumber alloc] initWithDouble:(exactResult[3])] ,
+          @"speedLat":[[NSNumber alloc] initWithDouble:(exactResult[4])] ,
+          @"speedDist":[[NSNumber alloc] initWithDouble:(exactResult[5])] ,
+      };
+
+      double leaveResult[6];
+      char leaveError[AS_MAXCH];
+      swe_calc_ut(
+          [leaveJulianDay doubleValue],
+          swissephId,
+          SEFLG_SPEED | SEFLG_JPLEPH,
+          leaveResult,
+          leaveError
+      );
+      NSDictionary *leaveEphemeris = @{
+          @"julianDay": leaveJulianDay,
+          @"longitude": [[NSNumber alloc] initWithDouble:(leaveResult[0])] ,
+          @"latitude":[[NSNumber alloc] initWithDouble:(leaveResult[1])] ,
+          @"distance":[[NSNumber alloc] initWithDouble:(leaveResult[2])] ,
+          @"speedLong":[[NSNumber alloc] initWithDouble:(leaveResult[3])] ,
+          @"speedLat":[[NSNumber alloc] initWithDouble:(leaveResult[4])] ,
+          @"speedDist":[[NSNumber alloc] initWithDouble:(leaveResult[5])] ,
+      };
+
+      NSDictionary *points = @{
+          @"enter": enterEphemeris,
+          @"exact": exactEphemeris,
+          @"leave": leaveEphemeris,
+      };
+
+      [transits addObject: @{
+          @"points": points,
+          @"orb": [[NSNumber alloc] initWithDouble:orb],
+      }];
+  }
+
+  resolve(transits);
+};
+
+@end
