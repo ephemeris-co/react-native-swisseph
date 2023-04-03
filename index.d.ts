@@ -2541,6 +2541,9 @@ declare namespace swisseph {
     }
     orb: number
   }[]>
+
+  function get_new_retrogrades(startJulianDay: number, endJulianDay: number): Promise<any[]>
+  function get_new_directs(startJulianDay: number, endJulianDay: number): Promise<any[]>
 }
 
 export = swisseph

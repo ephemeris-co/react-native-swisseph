@@ -1,6 +1,7 @@
 
 #import "RNSwisseph.h"
 #include <Foundation/Foundation.h>
+#import "SwissEphemeris/swisseph/sweutils.h"
 
 
 @implementation RNSwisseph
@@ -1227,5 +1228,109 @@ RCT_EXPORT_METHOD(
 
   resolve(transits);
 };
+
+RCT_EXPORT_METHOD(
+  get_new_retrogrades: (double)start_jd
+  end_jd: (double)end_jd
+  resolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+) {
+  @try {
+    RetrogradesList retrogradesList = get_new_retrogrades(start_jd, end_jd);
+
+    NSMutableArray *retrogradesArray = [[NSMutableArray alloc] init];
+
+    for (int i = 0; i < retrogradesList.count; i++) {
+      Retrograde retrograde = retrogradesList.retrogrades[i];
+
+      NSDictionary *retrogradeDict = @{
+        @"swissephId": @(retrograde.ipl),
+        @"startJulianDay": @(retrograde.start_jd),
+        @"endJulianDay": @(retrograde.end_jd),
+        @"swissephId": @(retrograde.ipl),
+        @"startEphemeris": @{
+          @"julianDay": @(retrograde.start_ephemeris.jd),
+          @"longitude": @(retrograde.start_ephemeris.longitude),
+          @"latitude": @(retrograde.start_ephemeris.latitude),
+          @"longitudeSpeed": @(retrograde.start_ephemeris.longitude_speed),
+          @"latitudeSpeed": @(retrograde.start_ephemeris.latitude_speed),
+          @"distance": @(retrograde.start_ephemeris.distance),
+          @"distanceSpeed": @(retrograde.start_ephemeris.distance_speed)
+        },
+        @"endEphemeris": @{
+          @"julianDay": @(retrograde.end_ephemeris.jd),
+          @"longitude": @(retrograde.end_ephemeris.longitude),
+          @"latitude": @(retrograde.end_ephemeris.latitude),
+          @"longitudeSpeed": @(retrograde.end_ephemeris.longitude_speed),
+          @"latitudeSpeed": @(retrograde.end_ephemeris.latitude_speed),
+          @"distance": @(retrograde.end_ephemeris.distance),
+          @"distanceSpeed": @(retrograde.end_ephemeris.distance_speed)
+        }
+      };
+
+      [retrogradesArray addObject:retrogradeDict];
+    }
+
+    // Free the memory allocated for retrogradesList.retrogrades
+    free(retrogradesList.retrogrades);
+
+    resolve(retrogradesArray);
+  }
+  @catch (NSException *exception) {
+    reject(@"0",exception.reason,nil);
+  }
+}
+
+RCT_EXPORT_METHOD(
+  get_new_directs: (double)start_jd
+  end_jd: (double)end_jd
+  resolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+) {
+  @try {
+    RetrogradesList directsList = get_new_directs(start_jd, end_jd);
+
+    NSMutableArray *directsArray = [[NSMutableArray alloc] init];
+
+    for (int i = 0; i < directsList.count; i++) {
+      Retrograde direct = directsList.retrogrades[i];
+
+      NSDictionary *directDict = @{
+        @"swissephId": @(direct.ipl),
+        @"startJulianDay": @(direct.start_jd),
+        @"endJulianDay": @(direct.end_jd),
+        @"swissephId": @(direct.ipl),
+        @"startEphemeris": @{
+          @"julianDay": @(direct.start_ephemeris.jd),
+          @"longitude": @(direct.start_ephemeris.longitude),
+          @"latitude": @(direct.start_ephemeris.latitude),
+          @"longitudeSpeed": @(direct.start_ephemeris.longitude_speed),
+          @"latitudeSpeed": @(direct.start_ephemeris.latitude_speed),
+          @"distance": @(direct.start_ephemeris.distance),
+          @"distanceSpeed": @(direct.start_ephemeris.distance_speed)
+        },
+        @"endEphemeris": @{
+          @"julianDay": @(direct.end_ephemeris.jd),
+          @"longitude": @(direct.end_ephemeris.longitude),
+          @"latitude": @(direct.end_ephemeris.latitude),
+          @"longitudeSpeed": @(direct.end_ephemeris.longitude_speed),
+          @"latitudeSpeed": @(direct.end_ephemeris.latitude_speed),
+          @"distance": @(direct.end_ephemeris.distance),
+          @"distanceSpeed": @(direct.end_ephemeris.distance_speed)
+        }
+      };
+
+      [directsArray addObject:directDict];
+    }
+
+    // Free the memory allocated for directsList.retrogrades
+    free(directsList.retrogrades);
+
+    resolve(directsArray);
+  }
+  @catch (NSException *exception) {
+    reject(@"0",exception.reason,nil);
+  }
+}
 
 @end

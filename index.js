@@ -134,6 +134,14 @@ async function get_transits(aspects) {
   return await RNSwisseph.get_transits(aspects);
 }
 
+async function get_new_retrogrades(startJulianDay, endJulianDay) {
+  return await RNSwisseph.get_new_retrogrades(startJulianDay, endJulianDay);
+}
+
+async function get_new_directs(startJulianDay, endJulianDay) {
+  return await RNSwisseph.get_new_directs(startJulianDay, endJulianDay);
+}
+
 export default {
     ...swisseph,
     swe_julday,
@@ -165,5 +173,7 @@ export default {
     swe_rise_trans,
     find_next_crossing,
     find_previous_crossing,
-    get_transits
+    get_transits,
+    get_new_retrogrades,
+    get_new_directs
 };
