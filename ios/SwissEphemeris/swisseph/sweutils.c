@@ -243,9 +243,6 @@ RetrogradesList get_new_retrogrades_in_day(double jd)
     Ephemeris start_of_day_ephemeris = create_ephemeris(start_of_day_jd, ipl);
     Ephemeris end_of_day_ephemeris = create_ephemeris(end_of_day_jd, ipl);
 
-    printf("---- %d ----\n", ipl);
-    printf("--- Retrograde Speeds: start: %lf, end: %lf\n", start_of_day_ephemeris.longitude_speed, end_of_day_ephemeris.longitude_speed);
-
     if (start_of_day_ephemeris.longitude_speed > 0 && end_of_day_ephemeris.longitude_speed < 0)
     {
 
@@ -304,9 +301,6 @@ RetrogradesList get_new_directs_in_day(double jd)
     Ephemeris start_of_day_ephemeris = create_ephemeris(start_of_day_jd, ipl);
     Ephemeris end_of_day_ephemeris = create_ephemeris(end_of_day_jd, ipl);
 
-    printf("---- %d ----\n", ipl);
-    printf("--- Direct Speeds: start: %lf, end: %lf\n", start_of_day_ephemeris.longitude_speed, end_of_day_ephemeris.longitude_speed);
-
     if (start_of_day_ephemeris.longitude_speed < 0 && end_of_day_ephemeris.longitude_speed > 0)
     {
 
@@ -321,9 +315,6 @@ RetrogradesList get_new_directs_in_day(double jd)
       retrograde.end_jd = retrograde_end_jd;
       retrograde.start_ephemeris = start_ephemeris;
       retrograde.end_ephemeris = end_ephemeris;
-
-      printf("--- Goes direct on %lf\n", retrograde_end_jd);
-      printf("--- Went retrograde on %lf\n\n", retrograde_start_jd);
 
       int size = count + 1;
       new_directs.retrogrades = realloc(new_directs.retrogrades, sizeof(Retrograde) * size);
@@ -353,8 +344,6 @@ RetrogradesList get_new_retrogrades(double start_jd, double end_jd)
   int count = 0;
   for (current_jd = start_jd; current_jd < end_jd; current_jd++)
   {
-
-    printf("--- Retrograde Day: %lf\n", end_jd - current_jd);
 
     RetrogradesList new_retrogrades_in_day = get_new_retrogrades_in_day(current_jd);
 
@@ -388,8 +377,6 @@ RetrogradesList get_new_directs(double start_jd, double end_jd)
   int count = 0;
   for (current_jd = start_jd; current_jd < end_jd; current_jd++)
   {
-
-    printf("--- Direct Day: %lf\n", end_jd - current_jd);
 
     RetrogradesList new_directs_in_day = get_new_directs_in_day(current_jd);
 

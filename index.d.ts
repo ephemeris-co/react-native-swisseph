@@ -12,6 +12,14 @@ type EclipticEntity = {
   julianDay: number
 }
 
+type RetrogradationInfo = {
+  swissephId: number;
+  startJulianDay: number;
+  endJulianDay: number;
+  startEphemeris: EphemerisInfo;
+  endEphemeris: EphemerisInfo;
+}
+
 type Aspect = {
   aspect: {
       left: {
@@ -2542,8 +2550,8 @@ declare namespace swisseph {
     orb: number
   }[]>
 
-  function get_new_retrogrades(startJulianDay: number, endJulianDay: number): Promise<any[]>
-  function get_new_directs(startJulianDay: number, endJulianDay: number): Promise<any[]>
+  function get_new_retrogrades(startJulianDay: number, endJulianDay: number): Promise<RetrogradationInfo[]>
+  function get_new_directs(startJulianDay: number, endJulianDay: number): Promise<RetrogradationInfo[]>
 }
 
 export = swisseph
