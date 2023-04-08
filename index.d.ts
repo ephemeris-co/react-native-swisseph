@@ -16,8 +16,8 @@ type RetrogradationInfo = {
   swissephId: number;
   startJulianDay: number;
   endJulianDay: number;
-  startEphemeris: EphemerisInfo;
-  endEphemeris: EphemerisInfo;
+  startEphemeris: Ephemeris;
+  endEphemeris: Ephemeris;
 }
 
 type Aspect = {

@@ -1019,7 +1019,7 @@ RCT_EXPORT_METHOD(swe_rise_trans:(double) tjd_ut
     @try{
         double rise_set_time;
         char serr[AS_MAXCH];
-        double* geopos = malloc(sizeof(double) * 3);
+        double geopos[3];
         geopos[0] = longitude;
         geopos[1] = latitude;
         geopos[2] = height;
