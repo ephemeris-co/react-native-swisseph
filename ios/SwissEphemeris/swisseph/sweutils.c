@@ -361,6 +361,8 @@ RetrogradesList get_new_retrogrades(double start_jd, double end_jd)
       count++;
       new_retrogrades.count = count;
     }
+
+    free(new_retrogrades_in_day.retrogrades);
   }
 
   return new_retrogrades;
@@ -393,6 +395,8 @@ RetrogradesList get_new_directs(double start_jd, double end_jd)
       new_directs.retrogrades[count] = new_directs_in_day.retrogrades[i];
       count++;
       new_directs.count = count;
+
+      free(new_directs_in_day.retrogrades);
     }
   }
 
