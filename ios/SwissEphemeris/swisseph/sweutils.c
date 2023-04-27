@@ -4,6 +4,9 @@
 #include "sweutils.h"
 #include "SwissEphGlue.h"
 
+const int NUMBER_OF_RETROGRADATION_PLANETS = 8;
+const int RETROGRADATION_IPLS[NUMBER_OF_RETROGRADATION_PLANETS] = {SE_MERCURY, SE_VENUS, SE_MARS, SE_JUPITER, SE_SATURN, SE_URANUS, SE_NEPTUNE, SE_PLUTO};
+
 double get_search_interval_for_planet(int planet)
 {
   switch (planet)
@@ -234,12 +237,12 @@ RetrogradesList get_new_retrogrades_in_day(double jd)
   new_retrogrades.count = 0;
   new_retrogrades.retrogrades = malloc(sizeof(Retrograde));
 
-  int ipl;
   int count = 0;
+  int i;
 
-  for (ipl = 0; ipl < 10; ipl++)
+  for (i = 0; i < NUMBER_OF_RETROGRADATION_PLANETS; i++)
   {
-
+    int ipl = RETROGRADATION_IPLS[i];
     Ephemeris start_of_day_ephemeris = create_ephemeris(start_of_day_jd, ipl);
     Ephemeris end_of_day_ephemeris = create_ephemeris(end_of_day_jd, ipl);
 
@@ -292,12 +295,13 @@ RetrogradesList get_new_directs_in_day(double jd)
   new_directs.count = 0;
   new_directs.retrogrades = malloc(sizeof(Retrograde));
 
-  int ipl;
   int count = 0;
+  int i = 0;
 
-  for (ipl = 0; ipl < 10; ipl++)
+  for (i = 0; i < NUMBER_OF_RETROGRADATION_PLANETS; i++)
   {
 
+    int ipl = RETROGRADATION_IPLS[i];
     Ephemeris start_of_day_ephemeris = create_ephemeris(start_of_day_jd, ipl);
     Ephemeris end_of_day_ephemeris = create_ephemeris(end_of_day_jd, ipl);
 
