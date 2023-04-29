@@ -1,47 +1,3 @@
-type Ephemeris = {
-  julianDay: number
-  longitude: number
-  longitudeSpeed: number
-}
-
-type EclipticEntity = {
-  id: number
-  swissephId: number
-  longitude: number
-  longitudeSpeed: number
-  julianDay: number
-}
-
-type RetrogradationInfo = {
-  swissephId: number;
-  startJulianDay: number;
-  endJulianDay: number;
-  startEphemeris: Ephemeris;
-  endEphemeris: Ephemeris;
-}
-
-type Aspect = {
-  aspect: {
-      left: {
-          startLongitude: number;
-          exactLongitude: number;
-          endLongitude: number;
-      };
-      right: {
-          startLongitude: number;
-          exactLongitude: number;
-          endLongitude: number;
-      };
-      id: number;
-      angle: number;
-  };
-  eclipticEntities: [EclipticEntity, EclipticEntity];
-}[]
-
-type EclipticEntitiesAspect = {
-  eclipticEntities: [EclipticEntity, EclipticEntity]
-  aspect: Aspect
-}
 
 declare namespace swisseph {
   // #region Constants
@@ -328,6 +284,59 @@ declare namespace swisseph {
   type ResultCallback<T extends (...args: any) => any> = (
     result: ReturnType<T>
   ) => void
+
+
+  type Ephemeris = {
+    julianDay: number
+    longitude: number
+    longitudeSpeed: number
+  }
+  
+  type EclipticEntity = {
+    id: number
+    swissephId: number
+    longitude: number
+    longitudeSpeed: number
+    julianDay: number
+  }
+  
+  type RetrogradationInfo = {
+    swissephId: number;
+    startJulianDay: number;
+    endJulianDay: number;
+    startEphemeris: Ephemeris;
+    endEphemeris: Ephemeris;
+  }
+  
+  type Aspect = {
+    left: {
+      startLongitude: number;
+      exactLongitude: number;
+      endLongitude: number;
+    };
+    right: {
+      startLongitude: number;
+      exactLongitude: number;
+      endLongitude: number;
+    };
+    id: number;
+    angle: number;
+  }
+  
+  type EclipticEntitiesAspect = {
+    aspect: Aspect
+    eclipticEntities: [EclipticEntity, EclipticEntity]
+  }
+  
+  
+  type GetTransitsOutput = {
+    points: {
+      enter: Ephemeris
+      exact: Ephemeris
+      leave: Ephemeris
+    }
+    orb: number
+  }[]
 
   // #region Util
   /**
@@ -2541,14 +2550,7 @@ declare namespace swisseph {
     startdate: number
   ): Promise<number>
 
-  function get_transits(aspects: EclipticEntitiesAspect[]): Promise<{
-    points: {
-      enter: Ephemeris
-      exact: Ephemeris
-      leave: Ephemeris
-    }
-    orb: number
-  }[]>
+  function get_transits(aspects: EclipticEntitiesAspect[]): Promise<GetTransitsOutput>
 
   function get_new_retrogrades(startJulianDay: number, endJulianDay: number): Promise<RetrogradationInfo[]>
   function get_new_directs(startJulianDay: number, endJulianDay: number): Promise<RetrogradationInfo[]>
