@@ -439,3 +439,55 @@ Retrograde get_retrograde(double jd, int ipl)
 
   return retrograde;
 }
+
+Retrograde find_next_retrograde(double since_jd, int ipl)
+{
+
+  int is_retrogradable_planet = 0;
+
+  int i;
+  for (i = 0; i < NUMBER_OF_RETROGRADATION_PLANETS; i++)
+  {
+    if (RETROGRADATION_IPLS[i] == ipl)
+    {
+      is_retrogradable_planet = 1;
+      break;
+    }
+  }
+
+  if (is_retrogradable_planet == 0)
+  {
+    Retrograde retrograde;
+    retrograde.ipl = -1;
+    retrograde.start_jd = -1.0;
+    retrograde.end_jd = -1.0;
+    retrograde.start_ephemeris = create_ephemeris(since_jd, ipl);
+    retrograde.end_ephemeris = create_ephemeris(since_jd, ipl);
+
+    return retrograde;
+  }
+
+  Ephemeris ephemeris = create_ephemeris(since_jd, ipl);
+
+  if (ephemeris.longitude_speed < 0)
+  {
+    Retrograde retrograde = get_retrograde(since_jd, ipl);
+    return retrograde;
+  }
+
+  double jd = since_jd;
+  double prevSign = signbit(get_longitude_speed(jd, ipl));
+
+  while (1)
+  {
+    jd += 1;
+    double currentSign = signbit(get_longitude_speed(jd, ipl));
+
+    if (currentSign != prevSign)
+    {
+      return get_retrograde(jd, ipl);
+    }
+
+    prevSign = currentSign;
+  }
+}

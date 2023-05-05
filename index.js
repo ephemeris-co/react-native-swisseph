@@ -146,6 +146,10 @@ async function get_retrograde(julianDay, ipl) {
   return await RNSwisseph.get_retrograde(julianDay, ipl);
 }
 
+async function find_next_retrograde(julianDay, ipl) {
+  return await RNSwisseph.find_next_retrograde(julianDay, ipl);
+}
+
 export default {
     ...swisseph,
     swe_julday,
@@ -180,5 +184,6 @@ export default {
     get_transits,
     get_new_retrogrades,
     get_new_directs,
-    get_retrograde
+    get_retrograde,
+    find_next_retrograde
 };

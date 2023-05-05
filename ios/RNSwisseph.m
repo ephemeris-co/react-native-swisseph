@@ -1381,4 +1381,52 @@ RCT_EXPORT_METHOD(
 
 }
 
+RCT_EXPORT_METHOD(
+  find_next_retrograde: (double)jd
+  ipl: (int)ipl
+  resolver:(RCTPromiseResolveBlock)resolve
+  rejecter:(RCTPromiseRejectBlock)reject
+) {
+
+  @try {
+    Retrograde retrograde = find_next_retrograde(jd, ipl);
+
+    if (retrograde.ipl == -1) {
+      resolve(nil);
+      return;
+    }
+
+    NSDictionary *retrogradeDict = @{
+      @"swissephId": @(retrograde.ipl),
+      @"startJulianDay": @(retrograde.start_jd),
+      @"endJulianDay": @(retrograde.end_jd),
+      @"swissephId": @(retrograde.ipl),
+      @"startEphemeris": @{
+        @"julianDay": @(retrograde.start_ephemeris.jd),
+        @"longitude": @(retrograde.start_ephemeris.longitude),
+        @"latitude": @(retrograde.start_ephemeris.latitude),
+        @"longitudeSpeed": @(retrograde.start_ephemeris.longitude_speed),
+        @"latitudeSpeed": @(retrograde.start_ephemeris.latitude_speed),
+        @"distance": @(retrograde.start_ephemeris.distance),
+        @"distanceSpeed": @(retrograde.start_ephemeris.distance_speed)
+      },
+      @"endEphemeris": @{
+        @"julianDay": @(retrograde.end_ephemeris.jd),
+        @"longitude": @(retrograde.end_ephemeris.longitude),
+        @"latitude": @(retrograde.end_ephemeris.latitude),
+        @"longitudeSpeed": @(retrograde.end_ephemeris.longitude_speed),
+        @"latitudeSpeed": @(retrograde.end_ephemeris.latitude_speed),
+        @"distance": @(retrograde.end_ephemeris.distance),
+        @"distanceSpeed": @(retrograde.end_ephemeris.distance_speed)
+      }
+    };
+
+    resolve(retrogradeDict);
+  }
+  @catch (NSException *exception) {
+    reject(@"0",exception.reason,nil);
+  }
+
+}
+
 @end

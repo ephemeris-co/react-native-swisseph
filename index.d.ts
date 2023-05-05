@@ -2555,6 +2555,7 @@ declare namespace swisseph {
   function get_new_retrogrades(startJulianDay: number, endJulianDay: number): Promise<RetrogradationInfo[]>
   function get_new_directs(startJulianDay: number, endJulianDay: number): Promise<RetrogradationInfo[]>
   function get_retrograde(julian_day: number, ipl: number): Promise<RetrogradationInfo | undefined>;
+  function find_next_retrograde(julian_day: number, ipl: number): Promise<RetrogradationInfo | undefined>;
 }
 
 export = swisseph
