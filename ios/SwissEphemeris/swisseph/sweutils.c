@@ -406,3 +406,36 @@ RetrogradesList get_new_directs(double start_jd, double end_jd)
 
   return new_directs;
 }
+
+Retrograde get_retrograde(double jd, int ipl)
+{
+
+  Ephemeris current_ephemeris = create_ephemeris(jd, ipl);
+
+  if (current_ephemeris.longitude_speed > 0)
+  {
+    Retrograde retrograde;
+    retrograde.ipl = -1;
+    retrograde.start_jd = -1.0;
+    retrograde.end_jd = -1.0;
+    retrograde.start_ephemeris = current_ephemeris;
+    retrograde.end_ephemeris = current_ephemeris;
+
+    return retrograde;
+  }
+
+  double retrograde_start_jd = find_retrogradation_start(ipl, jd);
+  double retrograde_end_jd = find_retrogradation_end(ipl, jd);
+
+  Ephemeris start_ephemeris = create_ephemeris(retrograde_start_jd, ipl);
+  Ephemeris end_ephemeris = create_ephemeris(retrograde_end_jd, ipl);
+
+  Retrograde retrograde;
+  retrograde.ipl = ipl;
+  retrograde.start_jd = retrograde_start_jd;
+  retrograde.end_jd = retrograde_end_jd;
+  retrograde.start_ephemeris = start_ephemeris;
+  retrograde.end_ephemeris = end_ephemeris;
+
+  return retrograde;
+}

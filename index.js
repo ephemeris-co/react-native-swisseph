@@ -142,6 +142,10 @@ async function get_new_directs(startJulianDay, endJulianDay) {
   return await RNSwisseph.get_new_directs(startJulianDay, endJulianDay);
 }
 
+async function get_retrograde(julianDay, ipl) {
+  return await RNSwisseph.get_retrograde(julianDay, ipl);
+}
+
 export default {
     ...swisseph,
     swe_julday,
@@ -175,5 +179,6 @@ export default {
     find_previous_crossing,
     get_transits,
     get_new_retrogrades,
-    get_new_directs
+    get_new_directs,
+    get_retrograde
 };
